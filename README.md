@@ -74,7 +74,7 @@ This will create:
 ```
 embeddings/known_embeddings.pkl
 ```
-
+if not created make folder manually and name it embeddings and inside it known_embeddings.pkl
 ---
 
 ### 4. 🚀 Run the App
