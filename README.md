@@ -135,7 +135,3 @@ Made by [Hamiz Khan](https://github.com/Hamizkhan08)
 ## 🧠 Acknowledgements
 
 * VGGFace2 Dataset: © University of Oxford – VGG
----
-
-```
-
