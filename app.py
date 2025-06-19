@@ -9,21 +9,15 @@ from deepface import DeepFace
 # --- Flask App Initialization ---
 app = Flask(__name__)
 
-# --- 🚨 IMPORTANT CONFIGURATION 🚨 ---
-# This path MUST point to the root folder containing your known face subdirectories.
-# Based on your screenshot, this path is correct for your project.
-DATASET_KNOWN = "dataset/Known"
 
-# --- Other Configuration ---
+DATASET_KNOWN = "dataset/Known"
 STATIC_KNOWN = "static/Known"
 UPLOAD_FOLDER = "static/uploads"
 EMBEDDINGS_PATH = "embeddings/known_embeddings.pkl"
 
-# --- Create necessary folders ---
 os.makedirs(STATIC_KNOWN, exist_ok=True)
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# --- Load Known Face Embeddings ---
 try:
     with open(EMBEDDINGS_PATH, "rb") as f:
         known_faces = pickle.load(f)
