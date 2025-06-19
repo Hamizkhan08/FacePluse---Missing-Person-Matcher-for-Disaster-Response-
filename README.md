@@ -1,9 +1,8 @@
-```
+
 # 🧠 FacePluse – Missing Person Matcher for Disaster Response
 
 This project helps rescue teams automatically match a photo of a missing person with a large local dataset of known individuals using face recognition (DeepFace). It’s designed for use in post-disaster scenarios for rapid identification and aid.
 
----
 
 ## 📂 Project Structure
 
