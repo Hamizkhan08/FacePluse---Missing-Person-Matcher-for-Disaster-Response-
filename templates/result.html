@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FACEPLUSE - Image Info identification</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@800&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #030612;
+            --panel-color: rgba(13, 23, 43, 0.7);
+            --border-color: rgba(0, 195, 255, 0.25);
+            --text-primary: #eefbff;
+            --text-secondary: #849fbc;
+            --accent-cyan: #00f6ff;
+            --accent-amber: #ffb800;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Roboto Mono', monospace;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+        #background-grid {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image:
+                linear-gradient(var(--border-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: move-grid 20s linear infinite;
+            z-index: -1;
+            opacity: 0.5;
+        }
+        @keyframes move-grid { from { background-position: 0 0; } to { background-position: -50px -50px; } }
+        .app-header {
+            background: linear-gradient(to bottom, rgba(3, 6, 18, 0.9), transparent);
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            z-index: 100;
+        }
+        .logo { font-family: 'Orbitron', sans-serif; font-size: 2rem; color: var(--text-primary); text-shadow: 0 0 10px var(--accent-cyan); }
+        .logo span { color: var(--accent-cyan); }
+        .status-display { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: 1px; }
+        .status-light { width: 12px; height: 12px; background: #28a745; border-radius: 50%; box-shadow: 0 0 12px #28a745, inset 0 0 3px #fff; }
+
+        .report-main { flex-grow: 1; padding: 40px 50px; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        .page-header h1 { font-family: 'Orbitron', sans-serif; font-size: 2rem; letter-spacing: 2px; margin: 0; }
+        .action-btn { background: var(--accent-cyan); color: var(--bg-color); text-decoration: none; padding: 0.8rem 1.5rem; border-radius: 8px; font-weight: 700; transition: all 0.2s; }
+        .action-btn:hover { background-color: #fff; transform: scale(1.05); }
+
+        .report-grid { display: grid; grid-template-columns: 350px 1fr; gap: 40px; }
+        .panel { background-color: var(--panel-color); border: 1px solid var(--border-color); border-radius: 12px; backdrop-filter: blur(10px); }
+        .panel-header { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; text-transform: uppercase; color: var(--accent-cyan); padding: 20px 30px; border-bottom: 1px solid var(--border-color); }
+        .panel-content { padding: 30px; }
+        .subject-image { width: 100%; border-radius: 8px; border: 2px solid var(--accent-cyan); }
+
+        .primary-match-card {
+            background: linear-gradient(145deg, rgba(255,184,0,0.1), transparent);
+            border-color: var(--accent-amber);
+            text-align: center;
+        }
+        .primary-match-card img {
+            width: 180px; height: 180px;
+            border-radius: 50%; object-fit: cover;
+            border: 4px solid var(--accent-amber);
+            margin-bottom: 20px;
+            box-shadow: 0 0 25px rgba(255, 184, 0, 0.4);
+        }
+        .primary-match-card .dossier-field { margin-bottom: 20px; }
+        .dossier-label { display: block; font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .dossier-value { font-size: 1.8rem; font-family: 'Orbitron', sans-serif; }
+        .dossier-value.confidence { color: var(--accent-amber); }
+
+        .secondary-matches-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+        .secondary-card {
+            background: #161b22;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.2s ease-in-out;
+        }
+        .secondary-card:hover { transform: translateY(-5px); border-color: var(--accent-cyan); }
+        .secondary-card img { width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 10px; }
+        .secondary-card .identity { font-weight: bold; }
+        .secondary-card .confidence { color: var(--text-secondary); }
+        .error-message { color: #ff8080; font-size: 1.5em; border: 1px solid #ff8080; padding: 20px; border-radius: 5px; background: rgba(255, 60, 56, 0.1); }
+    </style>
+</head>
+<body>
+    <div id="background-grid"></div>
+    <header class="app-header">
+        <div class="logo">FACEPLUSE</div>
+        <div class="status-display">
+            <span>SYSTEM STATUS:</span>
+            <div class="status-light"></div>
+            <span>OPERATIONAL</span>
+        </div>
+    </header>
+
+    <main class="report-main">
+        <div class="page-header">
+            <h1>Recognition Log</h1>
+            <a href="/" class="action-btn">Initiate New Analysis</a>
+        </div>
+
+        {% if error %}
+            <div class="panel">
+                <div class="panel-header">System Alert</div>
+                <div class="panel-content">
+                    <p class="error-message">{{ error }}</p>
+                </div>
+            </div>
+        {% else %}
+            <div class="report-grid">
+                <!-- Left Panel: Subject Image -->
+                <div class="panel">
+                    <div class="panel-header">Input Subject</div>
+                    <div class="panel-content">
+                        <img src="{{ url_for('static', filename='uploads/' + uploaded_img) }}" alt="Uploaded Image" class="subject-image">
+                    </div>
+                </div>
+                <!-- Right Panel: Match Results -->
+                <div>
+                    <!-- Primary Match -->
+                    <div class="panel primary-match-card">
+                        <div class="panel-header">Primary Candidate Identified</div>
+                        <div class="panel-content">
+                            <img src="{{ url_for('static', filename='Known/' + matches.0.img_path) }}" alt="Primary Match">
+                            <div class="dossier-field">
+                                <span class="dossier-label">Identity</span>
+                                <span class="dossier-value">{{ matches.0.name }}</span>
+                            </div>
+                            <div class="dossier-field">
+                                <span class="dossier-label">Confidence Score</span>
+                                <span class="dossier-value confidence">{{ matches.0.similarity_percent }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Secondary Matches -->
+                    <div class="panel" style="margin-top: 40px;">
+                        <div class="panel-header">Secondary Candidates</div>
+                        <div class="panel-content">
+                            <div class="secondary-matches-grid">
+                                {% for match in matches[1:] %}
+                                    <div class="secondary-card">
+                                        <img src="{{ url_for('static', filename='Known/' + match.img_path) }}" alt="Secondary Match">
+                                        <div class="identity">{{ match.name }}</div>
+                                        <div class="confidence">{{ match.similarity_percent }}</div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </main>
+</body>
+</html>
