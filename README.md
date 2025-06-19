@@ -34,7 +34,7 @@ FacePluse/
 Use only the **validation (val)** subset (about ~3GB) from the original VGGFace2 dataset.
 
 📁 Download Link:  
-👉 [[https://www.robots.ox.ac.uk/~vgg/data/vgg_face2/data.html](https://www.robots.ox.ac.uk/~vgg/data/vgg_face2/data.html)  ](https://www.kaggle.com/datasets/hearfool/vggface2)
+👉 (https://www.kaggle.com/datasets/hearfool/vggface2)
 > ⚠️ Only use val folder dataset for this project Extract and rename the folder to:  
 ```bash
 dataset/Known
