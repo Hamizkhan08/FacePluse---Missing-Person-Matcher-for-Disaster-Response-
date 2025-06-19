@@ -1,3 +1,4 @@
+READ ALL INSTRUCTION BEFORE USING IT 
 
 # 🧠 FacePluse – Missing Person Matcher for Disaster Response
 
@@ -134,8 +135,6 @@ Made by [Hamiz Khan](https://github.com/Hamizkhan08)
 ## 🧠 Acknowledgements
 
 * VGGFace2 Dataset: © University of Oxford – VGG
-* DeepFace Library: [https://github.com/serengil/deepface](https://github.com/serengil/deepface)
-
 ---
 
 ```
